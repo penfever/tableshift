@@ -1,7 +1,7 @@
 from typing import Union, Dict, Tuple
 
 import numpy as np
-import rtdl
+from rtdl_revisiting_models import FTTransformer
 import scipy
 import sklearn
 import torch
@@ -59,7 +59,7 @@ def apply_model(model: torch.nn.Module, x):
     else:
         module = model
 
-    if isinstance(module, rtdl.FTTransformer) or isinstance(module, SAINT) \
+    if isinstance(module, FTTransformer) or isinstance(module, SAINT) \
             or isinstance(module, TabTransformer):
         x_num, x_cat = split_num_cat(x, get_module_attr(module, "cat_idxs"))
         return module(x_num, x_cat)

@@ -1,15 +1,14 @@
 """
-Wrappers for tabular baseline models from the rtdl package.
+Wrappers for tabular baseline models from the rtdl_revisiting_models package.
 
-rtdl source: https://github.com/Yura52/rtdl
+rtdl_revisiting_models source: https://github.com/yandex-research/rtdl-revisiting-models
 """
 
 import copy
 from typing import Optional, Callable, Any, Dict, Tuple
 
 import numpy as np
-import rtdl
-from rtdl import FTTransformer, FeatureTokenizer, Transformer
+from rtdl_revisiting_models import MLP, ResNet, FTTransformer
 import scipy
 import torch
 from torch import Tensor
@@ -18,28 +17,6 @@ from torch.utils.data import DataLoader
 from tableshift.models.compat import SklearnStylePytorchModel, OPTIMIZER_ARGS
 from tableshift.models.torchutils import apply_model, get_module_attr
 from tableshift.models.training import train_epoch
-
-class WrappedFTTransformer(FTTransformer):
-    @classmethod
-    def _make(
-            cls,
-            n_num_features,
-            cat_cardinalities,
-            transformer_config,
-    ):
-        feature_tokenizer = FeatureTokenizer(
-            n_num_features=n_num_features,
-            cat_cardinalities=cat_cardinalities,
-            d_token=transformer_config['d_token'],
-        )
-        if transformer_config['d_out'] is None:
-            transformer_config['head_activation'] = None
-        if transformer_config['kv_compression_ratio'] is not None:
-            transformer_config['n_tokens'] = feature_tokenizer.n_tokens + 1
-        return cls(
-            feature_tokenizer,
-            Transformer(**transformer_config),
-        )
 
 
 class SklearnStyleRTDLModel(SklearnStylePytorchModel):
@@ -63,7 +40,7 @@ class SklearnStyleRTDLModel(SklearnStylePytorchModel):
         return scipy.special.expit(prediction)
 
 
-class ResNetModel(rtdl.ResNet, SklearnStyleRTDLModel):
+class ResNetModel(ResNet, SklearnStyleRTDLModel):
     def __init__(self, **hparams):
         self.config = copy.deepcopy(hparams)
 
@@ -78,7 +55,7 @@ class ResNetModel(rtdl.ResNet, SklearnStyleRTDLModel):
         return self.predict_proba(X)
 
 
-class MLPModel(rtdl.MLP, SklearnStyleRTDLModel):
+class MLPModel(MLP, SklearnStyleRTDLModel):
     def __init__(self, **hparams):
         self.config = copy.deepcopy(hparams)
 
@@ -131,12 +108,22 @@ class MLPModelWithHook(MLPModel):
         return _get_activations(x)
 
 
-class FTTransformerModel(WrappedFTTransformer, SklearnStyleRTDLModel):
+class FTTransformerModel(FTTransformer, SklearnStyleRTDLModel):
+    def __init__(self, **hparams):
+        self.config = copy.deepcopy(hparams)
+
+        # Remove hparams that are not taken by the rtdl constructor.
+        for k in OPTIMIZER_ARGS:
+            hparams.pop(k)
+
+        super().__init__(**hparams)
+        self._init_optimizer()
 
     @property
     def cat_idxs(self):
-        return getattr(self.feature_tokenizer.cat_tokenizer,
-                       "cat_cardinalities", [])
+        """Get categorical indices from the model configuration."""
+        # The new FTTransformer stores cat_cardinalities directly
+        return getattr(self, "cat_cardinalities", [])
 
     def predict_proba(self, X) -> np.ndarray:
         return self.predict_proba(X)

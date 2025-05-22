@@ -38,7 +38,7 @@ dependencies = [
     "fairlearn>=0.9.0",
     "folktables",
     "frozendict>=2.3.0",
-    "rtdl>=0.0.13",
+    "rtdl_revisiting_models",
     "xport",
     "tqdm>=4.64.0",
     "hyperopt>=0.2.7",

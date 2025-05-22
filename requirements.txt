@@ -21,7 +21,7 @@ pytorch-lightning>=2.0.0
 torchmetrics>=0.11.0
 pytorch-tabnet>=4.0
 tab-transformer-pytorch>=0.2.1
-rtdl>=0.0.13
+rtdl_revisiting_models
 einops>=0.6.0
 
 # Fairness and bias mitigation
