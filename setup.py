@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
-from setuptools import find_packages
+from setuptools import setup, find_packages
 
 setup(name='tableshift',
       version='0.1',
@@ -19,13 +18,13 @@ setup(name='tableshift',
                    ['tableshift/datasets/nhanes_data_sources.json',
                     'tableshift/datasets/icd9-codes.json'])],
       install_requires=[
-          'numpy==1.23.5',
-          'ray==2.2',
-          'torch',
-          'torchvision',
-          'scikit-learn',
-          'pandas',
-          'fairlearn',
+          'numpy>=1.24.0',
+          'ray>=2.5.0',
+          'torch>=2.0.0',
+          'torchvision>=0.15.0',
+          'scikit-learn>=1.3.0',
+          'pandas>=2.0.0',
+          'fairlearn>=0.9.0',
           'folktables',
           'frozendict',
           'rtdl',

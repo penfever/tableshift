@@ -1,0 +1,119 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tableshift"
+version = "0.2.0"
+authors = [
+    {name = "Josh Gardner", email = "jpgard@cs.washington.edu"},
+]
+description = "A tabular data benchmarking toolkit."
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+keywords = ["machine learning", "tabular data", "distribution shift", "benchmarking"]
+
+dependencies = [
+    "numpy>=1.24.0",
+    "ray[train]>=2.5.0",
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+    "scikit-learn>=1.3.0",
+    "pandas>=2.0.0",
+    "fairlearn>=0.9.0",
+    "folktables",
+    "frozendict>=2.3.0",
+    "rtdl>=0.0.13",
+    "xport",
+    "tqdm>=4.64.0",
+    "hyperopt>=0.2.7",
+    "h5py>=3.8.0",
+    "tables",
+    "category-encoders>=2.6.0",
+    "einops>=0.6.0",
+    "tab-transformer-pytorch>=0.2.1",
+    "openpyxl>=3.1.0",
+    "optuna>=3.1.0",
+    "kaggle>=1.5.0",
+    "datasets>=2.11.0",
+    "torchinfo",
+    "psutil>=5.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.2.0",
+    "pytest-cov",
+    "black",
+    "isort",
+    "flake8",
+    "mypy",
+    "ipython>=8.7.0",
+    "ipdb>=0.13.9",
+]
+ml = [
+    "catboost>=1.2",
+    "lightgbm>=3.3",
+    "xgboost>=1.7.0",
+    "pytorch-lightning>=2.0.0",
+    "torchmetrics>=0.11.0",
+    "pytorch-tabnet>=4.0",
+]
+viz = [
+    "plotly>=5.14.0",
+    "matplotlib>=3.5.0",
+    "seaborn>=0.11.0",
+]
+all = [
+    "tableshift[dev,ml,viz]",
+]
+
+[project.urls]
+Homepage = "https://tableshift.org"
+Repository = "https://github.com/mlfoundations/tableshift"
+Documentation = "https://tableshift.org"
+
+[tool.setuptools.packages.find]
+include = ["tableshift*"]
+
+[tool.setuptools.package-data]
+tableshift = [
+    "datasets/nhanes_data_sources.json",
+    "datasets/icd9-codes.json",
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py39']
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"

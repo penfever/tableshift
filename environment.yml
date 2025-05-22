@@ -2,9 +2,9 @@ name: tableshift
 channels:
   - defaults
 dependencies:
-  - python=3.8
+  - python>=3.9,<3.13
   - pip
-  - lightgbm=3.3
+  - lightgbm>=3.3
   - pip:
     - -r requirements.txt
     - -e .

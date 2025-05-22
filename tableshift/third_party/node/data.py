@@ -107,7 +107,7 @@ def fetch_A9A(path, train_size=None, valid_size=None, test_size=None):
     X_train, X_test = X_train.toarray(), X_test.toarray()
     y_train[y_train == -1] = 0
     y_test[y_test == -1] = 0
-    y_train, y_test = y_train.astype(np.int), y_test.astype(np.int)
+    y_train, y_test = y_train.astype(np.int32), y_test.astype(np.int32)
 
     if all(sizes is None for sizes in (train_size, valid_size, test_size)):
         train_idx_path = os.path.join(path, 'stratified_train_idx.txt')
@@ -159,7 +159,7 @@ def fetch_EPSILON(path, train_size=None, valid_size=None, test_size=None):
     X_train, y_train = load_svmlight_file(train_path, dtype=np.float32, n_features=2000)
     X_test, y_test = load_svmlight_file(test_path, dtype=np.float32, n_features=2000)
     X_train, X_test = X_train.toarray(), X_test.toarray()
-    y_train, y_test = y_train.astype(np.int), y_test.astype(np.int)
+    y_train, y_test = y_train.astype(np.int32), y_test.astype(np.int32)
     y_train[y_train == -1] = 0
     y_test[y_test == -1] = 0
 
@@ -211,7 +211,7 @@ def fetch_PROTEIN(path, train_size=None, valid_size=None, test_size=None):
     X_train, y_train = load_svmlight_file(train_path, dtype=np.float32, n_features=357)
     X_test, y_test = load_svmlight_file(test_path, dtype=np.float32, n_features=357)
     X_train, X_test = X_train.toarray(), X_test.toarray()
-    y_train, y_test = y_train.astype(np.int), y_test.astype(np.int)
+    y_train, y_test = y_train.astype(np.int32), y_test.astype(np.int32)
 
     if all(sizes is None for sizes in (train_size, valid_size, test_size)):
         train_idx_path = os.path.join(path, 'stratified_train_idx.txt')
@@ -249,7 +249,7 @@ def fetch_YEAR(path, train_size=None, valid_size=None, test_size=51630):
         os.makedirs(path, exist_ok=True)
         download('https://www.dropbox.com/s/l09pug0ywaqsy0e/YearPredictionMSD.txt?dl=1', data_path)
     n_features = 91
-    types = {i: (np.float32 if i != 0 else np.int) for i in range(n_features)}
+    types = {i: (np.float32 if i != 0 else np.int32) for i in range(n_features)}
     data = pd.read_csv(data_path, header=None, dtype=types)
     data_train, data_test = data.iloc[:-test_size], data.iloc[-test_size:]
 
@@ -294,7 +294,7 @@ def fetch_HIGGS(path, train_size=None, valid_size=None, test_size=5 * 10 ** 5):
             with open(data_path, 'wb') as f_out:
                 shutil.copyfileobj(f_in, f_out)
     n_features = 29
-    types = {i: (np.float32 if i != 0 else np.int) for i in range(n_features)}
+    types = {i: (np.float32 if i != 0 else np.int32) for i in range(n_features)}
     data = pd.read_csv(data_path, header=None, dtype=types)
     data_train, data_test = data.iloc[:-test_size], data.iloc[-test_size:]
 

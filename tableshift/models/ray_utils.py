@@ -168,7 +168,7 @@ def ray_evaluate(model, split_loaders: Dict[str, Any]) -> dict:
 
     split_loaders should be a dict mapping split names to DataLoaders.
     """
-    dev = train.torch.get_device()
+    dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.eval()
     metrics = {}
     for split, loader in split_loaders.items():
@@ -287,7 +287,10 @@ def run_ray_tune_experiment(dset: Union[TabularDataset, CachedDataset],
                     ("train", "test", "id_test", "ood_test")}
 
     # Explicitly initialize ray in order to set the temp dir.
-    ray.init(_temp_dir=tune_config.ray_tmp_dir, ignore_reinit_error=True)
+    if tune_config.ray_tmp_dir:
+        ray.init(runtime_env={"env_vars": {"RAY_TMPDIR": tune_config.ray_tmp_dir}}, ignore_reinit_error=True)
+    else:
+        ray.init(ignore_reinit_error=True)
 
     is_dg = is_domain_generalization_model_name(model_name)
 
@@ -318,7 +321,7 @@ def run_ray_tune_experiment(dset: Union[TabularDataset, CachedDataset],
             # can ensure DataLoaders are iterating properly).
             n_epochs = 2
 
-        device = train.torch.get_device()
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         def _prepare_shard(shardname, infinite=False):
             """Get the dataset shard and, optionally, repeat infinitely."""
